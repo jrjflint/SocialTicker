@@ -6,7 +6,12 @@
     <title>Social Ticker Prototype</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
-  <body class="app-shell">
+  <body
+    class="app-shell"
+    data-api-base-url=""
+    data-instagram-handle="jamesfollent"
+    data-poll-interval-ms="8000"
+  >
     <header class="app-header" role="banner">
       <div class="brand-mark" aria-hidden="true">ST</div>
       <div class="header-copy">
@@ -20,48 +25,63 @@
           <img
             class="profile-photo"
             src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80"
-            alt="Portrait of Taylor Rivera"
+            alt="Portrait of James Follent"
             width="128"
             height="128"
           />
           <div class="profile-meta">
-            <p class="profile-handle" id="profile-title">@taylor.studio</p>
-            <p class="profile-name">Taylor Rivera Studio</p>
-            <p class="profile-note">Live events • Creative campaigns • Behind-the-scenes drops</p>
+            <p class="profile-handle" id="profile-title">@jamesfollent</p>
+            <p class="profile-name">James Follent</p>
+            <p class="profile-note">Design • Photography • Creator lifestyle drops</p>
           </div>
         </div>
-        <div class="status-pill status-live" role="status">Live</div>
+        <div class="status-pill status-live" role="status" data-role="status-pill">
+          <span data-role="status-text">Live</span>
+        </div>
       </section>
 
       <section class="counter-panel" aria-labelledby="counter-title">
         <p class="panel-title" id="counter-title">Instagram followers</p>
         <div class="counter-value" aria-live="polite" aria-atomic="true">
-          <span class="digits">128,420</span>
-          <span class="delta positive">+312 today</span>
+          <span class="digits" data-role="digits">--</span>
+          <span class="delta" data-role="delta" hidden>+0</span>
         </div>
         <div class="meta-row">
           <div class="meta-group">
             <p class="meta-label">Last refreshed</p>
-            <p class="meta-value">2 minutes ago</p>
+            <p class="meta-value" data-role="last-refreshed">Waiting for update…</p>
           </div>
           <div class="meta-group">
             <p class="meta-label">Next update</p>
-            <p class="meta-value">00:00:18</p>
+            <p class="meta-value" data-role="next-refresh">--</p>
           </div>
         </div>
-        <div class="alert-banner" role="alert" aria-live="assertive">
-          <strong>Connection steady.</strong> Data served from fresh cache.
+        <div class="alert-banner" role="status" aria-live="polite" hidden data-role="alert">
+          <strong data-role="alert-title"></strong>
+          <span data-role="alert-message"></span>
         </div>
       </section>
 
       <section class="qr-panel" aria-labelledby="qr-title">
         <p class="panel-title" id="qr-title">Scan &amp; follow</p>
         <div class="qr-card">
-          <div class="qr-code" role="img" aria-label="QR code linking to instagram.com/taylor.studio"></div>
+          <img
+            class="qr-image"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&amp;data=https%3A%2F%2Fwww.instagram.com%2Fjamesfollent"
+            alt="QR code linking to instagram.com/jamesfollent"
+            width="240"
+            height="240"
+            loading="lazy"
+            decoding="async"
+          />
           <div class="qr-actions">
             <p class="qr-instruction">Open your camera and aim at the code</p>
-            <a class="qr-link" href="https://instagram.com/taylor.studio" target="_blank" rel="noreferrer noopener"
-              >instagram.com/taylor.studio</a
+            <a
+              class="qr-link"
+              href="https://www.instagram.com/jamesfollent"
+              target="_blank"
+              rel="noreferrer noopener"
+              >instagram.com/jamesfollent</a
             >
           </div>
         </div>
@@ -71,5 +91,6 @@
     <footer class="app-footer">
       <p>Prototype only — data updates simulated for design exploration.</p>
     </footer>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>
