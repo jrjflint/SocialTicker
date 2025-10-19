@@ -8,7 +8,7 @@
 ## Milestones
 
 1. **Scaffold Worker Project**
-   - Initialize `backend/worker/` with `wrangler.toml`, TypeScript Worker entry, and KV binding (`SOCIAL_TICKER_CACHE`).
+   - Initialize `docker/backend/worker/` with `wrangler.toml`, TypeScript Worker entry, and KV binding (`SOCIAL_TICKER_CACHE`).
    - Configure environment variables through `wrangler secret` for Instagram credentials and runtime tuning (TTL, refresh cadence).
 
 2. **Implement Data Refresh Job**
@@ -45,7 +45,7 @@
   - Image: `node:18-alpine` with project dependencies installed.
   - Command: `npm run dev -- --host 0.0.0.0 --port 5173` for Vite-powered hot reload.
   - Ports: `5173:5173` (host→container) to expose the preview UI in the browser.
-  - Volumes: bind mount `./frontend` to `/app` to share live code edits; mount `node_modules` as an anonymous volume to avoid host pollution.
+  - Volumes: bind mount `./docker/frontend` to `/app` to share live code edits; mount `node_modules` as an anonymous volume to avoid host pollution.
   - Environment:
     - `VITE_API_BASE_URL=http://backend:8787/api` routes browser requests to the Worker emulator.
     - `VITE_POLL_INTERVAL_MS=15000` aligns with planned production polling defaults.
@@ -53,7 +53,7 @@
   - Image: `node:18-alpine` with Wrangler CLI installed (`npm install -g wrangler`).
   - Command: `wrangler dev --local --persist-to=./.wrangler/state --ip 0.0.0.0 --port 8787` to emulate the Worker locally and persist KV state.
   - Ports: `8787:8787` to surface the Worker preview API on the host.
-  - Volumes: bind mount `./backend/worker` to `/app` for live code reload; persist `.wrangler/state` via a named volume (`wrangler-state`) so KV cache survives restarts.
+  - Volumes: bind mount `./docker/backend/worker` to `/app` for live code reload; persist `.wrangler/state` via a named volume (`wrangler-state`) so KV cache survives restarts.
   - Environment:
     - `CF_ACCOUNT_ID`, `CF_API_TOKEN` (scoped to Workers dev) emulate production auth expectations.
     - `INSTAGRAM_ACCESS_TOKEN` provides API access in both dev and prod.
@@ -67,7 +67,7 @@
   - Environment: none required; `redis` service name resolves inside the network for backend access.
 
 ### Developer Tooling Inside Containers
-- **Frontend hot reload**: Vite watches the bind-mounted `./frontend` directory; file edits trigger automatic browser refresh via WebSocket on port 5173 without additional setup.
+- **Frontend hot reload**: Vite watches the bind-mounted `./docker/frontend` directory; file edits trigger automatic browser refresh via WebSocket on port 5173 without additional setup.
 - **Backend live reload**: `wrangler dev` restarts the Worker when files under `/app/src` change. Persisted KV data in `wrangler-state` keeps the cache warm during restarts.
 - **Shared `.env` management**: Use a `.env.development` file stored outside version control and injected via `env_file` in `docker-compose.yml` so secrets load consistently between developers.
 - **CLI access**: Developers can run `docker compose exec frontend npm test` or `docker compose exec backend npm run lint` for isolated tooling that respects container dependencies.

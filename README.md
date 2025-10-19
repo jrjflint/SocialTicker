@@ -83,7 +83,7 @@ Build fresh images and launch the development stack:
 docker compose -f docker-compose.dev.yml up --build
 ```
 
-This command builds each service declared in `docker-compose.dev.yml`, loads environment variables from the referenced `env_file` entries (for example, `.env.development`), and starts the containers with shared networking for hot reload and API access.
+This command builds each service declared in `docker-compose.dev.yml`, loads environment variables from the referenced `env_file` entries (for example, `.env.development`), and starts the containers with shared networking for hot reload and API access. The compose build contexts assume the frontend and backend live under `docker/frontend` and `docker/backend`, so run the command from the repository root.
 
 ### Stop, logs, and teardown
 - **Stop containers without removing resources:**
@@ -131,8 +131,8 @@ cloudflared tunnel run social-ticker-dev
 Ensure the tunnel is authenticated with your Cloudflare account before starting it. Once connected, share the generated public URL with collaborators or devices that need to access the ticker securely without opening firewall ports.
 
 ### Repository Structure (planned)
-- `frontend/` — web app (UI, theming, QR rendering)
-- `backend/worker/` — Cloudflare Worker source, KV bindings, scheduled logic
+- `docker/frontend/` — web app (UI, theming, QR rendering)
+- `docker/backend/worker/` — Cloudflare Worker source, KV bindings, scheduled logic
 - `public/` — static assets and default themes
 - `docs/` — additional documentation and screenshots
 

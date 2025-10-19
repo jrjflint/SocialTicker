@@ -5,4 +5,4 @@
 !.env.example
 
 # Docker artefacts
-backend/.wrangler/
+docker/backend/.wrangler/
