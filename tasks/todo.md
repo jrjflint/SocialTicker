@@ -46,6 +46,7 @@
 - Logged the 2025-10-19 changelog entry covering Docker Compose scaffolding, development Dockerfiles, repository reorganization, and expanded documentation guidance.
 - Drafted a display-focused frontend prototype with HTML/CSS scaffolding for the identity, follower counter, and QR modules.
 - Connected the prototype to a Cloudflare Worker-powered Instagram follower endpoint, added live polling/error states, and replaced the QR placeholder with the `@jamesfollent` code.
+- Removed the deprecated Docker Compose version declaration, added a `.env.development.example`, and refreshed README guidance for creating local env files.
 
 
 ## Reorganization Tasks
@@ -85,3 +86,11 @@
 - [x] Wire the frontend ticker to the Worker endpoint, updating the live counter, metadata, and error states.
 - [x] Replace the placeholder QR module with a generated code pointing to `https://www.instagram.com/jamesfollent` and document alt text.
 - [x] Document the new endpoint and UI behavior in `CHANGELOG.md` and summarize results in the Review section.
+
+## Compose warning + env template fix
+
+- [x] Remove the deprecated `version` key from `docker-compose.dev.yml`.
+- [x] Add a committed `.env.development.example` with documented placeholder values.
+- [x] Update `.gitignore` to allow the example file while keeping real env files ignored.
+- [x] Point README instructions at the new example file and clarify setup steps.
+- [x] Summarize the work in the `## Review` section after implementation.
