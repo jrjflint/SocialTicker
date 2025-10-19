@@ -44,6 +44,7 @@
 - Added docker-compose.dev scaffold with hot-reload mounts, dev commands, and environment fallbacks alongside `.gitignore` protections for local secrets.
 - Relocated frontend and backend source directories under `docker/` and updated compose contexts, documentation, and ignore rules to match the new structure.
 - Logged the 2025-10-19 changelog entry covering Docker Compose scaffolding, development Dockerfiles, repository reorganization, and expanded documentation guidance.
+- Drafted a display-focused frontend prototype with HTML/CSS scaffolding for the identity, follower counter, and QR modules.
 
 
 ## Reorganization Tasks
@@ -66,3 +67,12 @@
 - [x] Draft concise changelog entry for the latest work.
 - [x] Update `CHANGELOG.md` with the new entry under the appropriate date.
 - [x] Summarize the outcome in the `## Review` section after completion.
+
+## Frontend Prototype Scaffold
+
+- [x] Review the PRD and existing plans to confirm UI requirements for the prototype display.
+- [x] Sketch the layout structure and component hierarchy for the ticker, QR module, and profile block.
+- [x] Implement `docker/frontend/index.html` with semantic markup for the prototype scaffold.
+- [x] Implement `docker/frontend/style.css` with typography, layout, and theme styling aligned with the PRD.
+- [x] Verify the prototype layout manually (structure, accessibility basics) and adjust as needed.
+- [x] Update this TODO list and add a summary entry to the `## Review` section after implementation.
