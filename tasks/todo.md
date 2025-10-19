@@ -19,7 +19,16 @@
 - [ ] Document verification steps and update review notes after implementation.
   - [ ] Outline manual test steps (compose up, service health checks, hot reload) in README or docs.
   - [ ] Summarize results in the `## Review` section once tasks complete.
+- [x] Plan Docker development scaffolding updates for frontend and backend services.
+  - [x] Review existing repository structure for frontend/backend placement and compose expectations.
+  - [x] Determine required Dockerfile.dev stages, dependencies, and working directories.
+- [x] Implement Dockerfile.dev scaffolding for frontend and backend.
+  - [x] Create `frontend/Dockerfile.dev` with builder/runtime stages and development-friendly configuration.
+  - [x] Create `backend/Dockerfile.dev` mirroring the development workflow requirements.
+- [x] Document key configuration choices.
+  - [x] Add inline comments about Node versions and build arguments to each Dockerfile for reproducibility.
 
 ## Review
 - Chose Cloudflare Workers + KV as the MVP backend target and updated README/PLAN with Worker-specific architecture, deployment, and cache flow details.
 - Added containerized development plan covering service composition, shared networking, environment parity, and hot-reload tooling expectations.
+- Scaffolded frontend and backend development Dockerfiles with documented build arguments and multi-stage workflows.

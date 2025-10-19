@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1.4
+# Development image for the Cloudflare Worker backend.
+# Build arguments capture toolchain versions to keep local builds reproducible.
+ARG NODE_VERSION=18.18.2
+ARG WRANGLER_VERSION=3.28.2
+ARG PNPM_VERSION=8.15.6
+
+FROM node:${NODE_VERSION}-alpine AS base
+LABEL maintainer="Social Ticker <engineering@socialticker.dev>"
+WORKDIR /app
+ENV NODE_ENV=development
+
+# Shared system packages for worker tooling and bindings.
+RUN apk add --no-cache bash libc6-compat git
+
+FROM base AS deps
+RUN corepack enable && \
+    corepack prepare pnpm@${PNPM_VERSION} --activate >/dev/null 2>&1 || true
+
+# Bring in the Worker source first to maximise cache hits when only app code changes.
+COPY worker/ ./
+
+# Install project dependencies if a manifest exists.
+RUN --mount=type=cache,target=/root/.npm \
+    if [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
+    elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+    elif [ -f package.json ]; then npm install; \
+    else echo "No package manifest found; skipping install"; \
+    fi
+
+# Build stage accommodates bundling steps (e.g., worker build) when defined.
+FROM deps AS builder
+RUN if [ -f package.json ] && npm run | grep -q "build"; then npm run build; else echo "No build script detected; skipping"; fi
+
+# Runtime image mirrors docker-compose.dev expectations with Wrangler available.
+FROM base AS runtime
+ENV PATH="/app/node_modules/.bin:${PATH}"
+RUN npm install -g wrangler@${WRANGLER_VERSION}
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app ./
+
+# Wrangler dev server default command; compose may override via command/entrypoint.
+CMD ["wrangler", "dev", "--local", "--persist-to=./.wrangler/state", "--ip", "0.0.0.0", "--port", "8787"]
