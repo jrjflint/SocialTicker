@@ -27,8 +27,13 @@
   - [x] Create `backend/Dockerfile.dev` mirroring the development workflow requirements.
 - [x] Document key configuration choices.
   - [x] Add inline comments about Node versions and build arguments to each Dockerfile for reproducibility.
+- [x] Document Docker Compose development workflow in README.
+  - [x] Outline prerequisites and environment variable management expectations for local containers.
+  - [x] Describe start, stop, log, and teardown commands for docker compose usage.
+  - [x] Provide guidance for integrating Cloudflare Tunnel once services are running.
 
 ## Review
 - Chose Cloudflare Workers + KV as the MVP backend target and updated README/PLAN with Worker-specific architecture, deployment, and cache flow details.
 - Added containerized development plan covering service composition, shared networking, environment parity, and hot-reload tooling expectations.
 - Scaffolded frontend and backend development Dockerfiles with documented build arguments and multi-stage workflows.
+- Documented Docker Compose usage, lifecycle commands, environment variable handling, and Cloudflare Tunnel integration guidance in the README.

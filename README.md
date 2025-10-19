@@ -69,6 +69,60 @@ ACCENT_COLOR=#ff4d4d
 THEME=dark                     # dark | light | high-contrast
 ```
 
+## Running locally with Docker Compose
+
+### Prerequisites
+- Docker Desktop 4.x+ (macOS/Windows) or Docker Engine 20.10+ with Compose v2 (Linux)
+- Cloned repository with access to `docker-compose.dev.yml` and the service Dockerfiles
+- A `.env.development` (or similar) file that mirrors the keys listed above; never commit secrets to the repo
+
+### Start services
+Build fresh images and launch the development stack:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This command builds each service declared in `docker-compose.dev.yml`, loads environment variables from the referenced `env_file` entries (for example, `.env.development`), and starts the containers with shared networking for hot reload and API access.
+
+### Stop, logs, and teardown
+- **Stop containers without removing resources:**
+
+  ```bash
+  docker compose -f docker-compose.dev.yml stop
+  ```
+
+- **Tail logs for all services or a single service:**
+
+  ```bash
+  docker compose -f docker-compose.dev.yml logs -f            # all services
+  docker compose -f docker-compose.dev.yml logs -f frontend   # specific service
+  ```
+
+- **Remove containers, networks, and anonymous volumes:**
+
+  ```bash
+  docker compose -f docker-compose.dev.yml down -v
+  ```
+
+Running `down -v` ensures transient caches or database volumes are reset between test runs. Omit `-v` if you want to preserve state.
+
+### Environment variables
+Each service in `docker-compose.dev.yml` should load shared settings via `env_file` entries that point at `.env.development`. Create this file locally (copy from `.env.example` when available) and populate it with API tokens, Cloudflare credentials, and UI configuration. Compose reads the file at runtime, so updates take effect after restarting the affected service. Keep secret values out of version control by listing the file in `.gitignore`.
+
+### Integrating Cloudflare Tunnel
+After the stack is running locally, expose the frontend or API through Cloudflare Tunnel to test remote displays:
+
+```bash
+# One-off tunnel pointing to the frontend dev server on port 3000
+cloudflared tunnel --url http://localhost:3000
+
+# Or run a named tunnel configured in your cloudflared.yml
+cloudflared tunnel run social-ticker-dev
+```
+
+Ensure the tunnel is authenticated with your Cloudflare account before starting it. Once connected, share the generated public URL with collaborators or devices that need to access the ticker securely without opening firewall ports.
+
 ### Repository Structure (planned)
 - `frontend/` — web app (UI, theming, QR rendering)
 - `backend/worker/` — Cloudflare Worker source, KV bindings, scheduled logic
