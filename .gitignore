@@ -1,0 +1,8 @@
+# Environment configuration (never commit secrets)
+.env.development
+.env.local
+.env.*
+!.env.example
+
+# Docker artefacts
+backend/.wrangler/

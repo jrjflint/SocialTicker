@@ -7,15 +7,19 @@
 - [x] Document containerized service layout (frontend, backend, optional data stores) in PLAN.md.
 - [x] Specify development container settings (ports, volumes, env vars) mirroring production assumptions.
 - [x] Describe developer tooling expectations (e.g., hot reload) when running in containers.
-- [ ] Scaffold docker/dev environment files and directories.
-  - [ ] Create a top-level `docker/` folder (if missing) and add a `docker-compose.dev.yml` scaffold.
-  - [ ] Add placeholder service stubs for frontend/backend images with comments describing build contexts.
-- [ ] Define docker-compose.dev services with local bind mounts and dev commands.
-  - [ ] Configure bind mounts for source directories to enable hot reload (e.g., `./app:/usr/src/app`).
-  - [ ] Specify development commands (npm/yarn dev scripts) and shared environment (ports, restart policies).
-- [ ] Configure development environment variables and gitignore entries.
-  - [ ] Reference `.env.development` in compose env_file entries but ensure it remains excluded via `.gitignore` updates.
-  - [ ] Document fallback defaults for critical vars inside compose or README comments.
+- [x] Scaffold docker/dev environment files and directories.
+  - [x] Create a top-level `docker/` folder (if missing) and add a `docker-compose.dev.yml` scaffold.
+  - [x] Add placeholder service stubs for frontend/backend images with comments describing build contexts.
+- [x] Define docker-compose.dev services with local bind mounts and dev commands.
+  - [x] Configure bind mounts for source directories to enable hot reload (e.g., `./app:/usr/src/app`).
+  - [x] Specify development commands (npm/yarn dev scripts) and shared environment (ports, restart policies).
+- [x] Configure development environment variables and gitignore entries.
+  - [x] Reference `.env.development` in compose env_file entries but ensure it remains excluded via `.gitignore` updates.
+  - [x] Document fallback defaults for critical vars inside compose or README comments.
+- [x] Planning: Docker Compose development scaffolding updates.
+  - [x] Inspect existing frontend/backend directory layout for mount targets and entry commands.
+  - [x] Determine shared networks, volumes, and environment defaults required for dev services.
+  - [x] Outline documentation updates needed to explain environment variables and verification steps.
 - [ ] Document verification steps and update review notes after implementation.
   - [ ] Outline manual test steps (compose up, service health checks, hot reload) in README or docs.
   - [ ] Summarize results in the `## Review` section once tasks complete.
@@ -37,3 +41,4 @@
 - Added containerized development plan covering service composition, shared networking, environment parity, and hot-reload tooling expectations.
 - Scaffolded frontend and backend development Dockerfiles with documented build arguments and multi-stage workflows.
 - Documented Docker Compose usage, lifecycle commands, environment variable handling, and Cloudflare Tunnel integration guidance in the README.
+- Added docker-compose.dev scaffold with hot-reload mounts, dev commands, and environment fallbacks alongside `.gitignore` protections for local secrets.
