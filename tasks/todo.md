@@ -7,6 +7,10 @@
 - [x] Document containerized service layout (frontend, backend, optional data stores) in PLAN.md.
 - [x] Specify development container settings (ports, volumes, env vars) mirroring production assumptions.
 - [x] Describe developer tooling expectations (e.g., hot reload) when running in containers.
+- [ ] Scaffold docker/dev environment files and directories.
+- [ ] Define docker-compose.dev services with local bind mounts and dev commands.
+- [ ] Configure development environment variables and gitignore entries.
+- [ ] Document verification steps and update review notes after implementation.
 
 ## Review
 - Chose Cloudflare Workers + KV as the MVP backend target and updated README/PLAN with Worker-specific architecture, deployment, and cache flow details.
