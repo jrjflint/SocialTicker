@@ -1,8 +1,9 @@
 # TODO
 
-- [x] Review existing documentation to locate architecture sections for backend polling and caching.
-- [x] Update PRD.md with backend refresh cadence, cache store details, and degraded state criteria.
-- [x] Update architecture/README documentation to describe cache persistence layer and TTL.
+- [x] Evaluate backend runtime options and select MVP target (Workers vs Node).
+- [x] Update README to reflect the chosen runtime and remove conflicting guidance.
+- [x] Update PLAN.md with implementation steps for the selected backend approach.
+- [x] Document fetch and cache workflow for the chosen platform (Workers APIs).
 
 ## Review
-- Documented backend refresh cadence, cache store + TTL, and degraded state handling across PRD.md and README.md.
+- Chose Cloudflare Workers + KV as the MVP backend target and updated README/PLAN with Worker-specific architecture, deployment, and cache flow details.
