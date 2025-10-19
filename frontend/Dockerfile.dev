@@ -1,0 +1,46 @@
+# syntax=docker/dockerfile:1.4
+# Development image for the Social Ticker frontend.
+# Build arguments document the Node.js toolchain versions for reproducibility.
+ARG NODE_VERSION=18.18.2
+ARG PNPM_VERSION=8.15.6
+
+FROM node:${NODE_VERSION}-alpine AS base
+LABEL maintainer="Social Ticker <engineering@socialticker.dev>"
+WORKDIR /app
+ENV NODE_ENV=development
+
+# Separate builder stage optimizes dependency caching for iterative work.
+FROM base AS deps
+# Corepack ships with Node 18+ but stays disabled on Alpine; enable it to support pnpm/yarn projects.
+RUN corepack enable && \
+    corepack prepare pnpm@${PNPM_VERSION} --activate >/dev/null 2>&1 || true
+# Install OS packages commonly required by frontend build tooling.
+RUN apk add --no-cache git openssh-client
+
+# Copy dependency manifests first to leverage Docker layer caching.
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+
+# Install dependencies only when manifests exist to keep the image flexible pre-scaffold.
+RUN --mount=type=cache,target=/root/.npm \
+    if [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
+    elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+    elif [ -f package.json ]; then npm install; \
+    else echo "No package manifest found; skipping install"; \
+    fi
+
+# Builder stage holds compiled assets for non-volume scenarios.
+FROM deps AS builder
+COPY . .
+RUN if [ -f package.json ] && npm run | grep -q "build"; then npm run build; else echo "No build script detected; skipping"; fi
+
+# Runtime stage keeps the image lean while reusing installed dependencies.
+FROM base AS runtime
+ENV PATH="/app/node_modules/.bin:${PATH}"
+
+# Copy node_modules and source from the builder stage.
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app ./
+
+# Default command mirrors docker-compose.dev expectations for Vite dev server.
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
