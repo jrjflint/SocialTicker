@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Social Ticker Prototype</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="app-shell">
+    <header class="app-header" role="banner">
+      <div class="brand-mark" aria-hidden="true">ST</div>
+      <div class="header-copy">
+        <h1>Social Ticker Display</h1>
+        <p class="tagline">Prototype layout inspired by the Social Ticker PRD.</p>
+      </div>
+    </header>
+    <main class="ticker" role="main">
+      <section class="identity-panel" aria-labelledby="profile-title">
+        <div class="profile-card">
+          <img
+            class="profile-photo"
+            src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80"
+            alt="Portrait of Taylor Rivera"
+            width="128"
+            height="128"
+          />
+          <div class="profile-meta">
+            <p class="profile-handle" id="profile-title">@taylor.studio</p>
+            <p class="profile-name">Taylor Rivera Studio</p>
+            <p class="profile-note">Live events • Creative campaigns • Behind-the-scenes drops</p>
+          </div>
+        </div>
+        <div class="status-pill status-live" role="status">Live</div>
+      </section>
+
+      <section class="counter-panel" aria-labelledby="counter-title">
+        <p class="panel-title" id="counter-title">Instagram followers</p>
+        <div class="counter-value" aria-live="polite" aria-atomic="true">
+          <span class="digits">128,420</span>
+          <span class="delta positive">+312 today</span>
+        </div>
+        <div class="meta-row">
+          <div class="meta-group">
+            <p class="meta-label">Last refreshed</p>
+            <p class="meta-value">2 minutes ago</p>
+          </div>
+          <div class="meta-group">
+            <p class="meta-label">Next update</p>
+            <p class="meta-value">00:00:18</p>
+          </div>
+        </div>
+        <div class="alert-banner" role="alert" aria-live="assertive">
+          <strong>Connection steady.</strong> Data served from fresh cache.
+        </div>
+      </section>
+
+      <section class="qr-panel" aria-labelledby="qr-title">
+        <p class="panel-title" id="qr-title">Scan &amp; follow</p>
+        <div class="qr-card">
+          <div class="qr-code" role="img" aria-label="QR code linking to instagram.com/taylor.studio"></div>
+          <div class="qr-actions">
+            <p class="qr-instruction">Open your camera and aim at the code</p>
+            <a class="qr-link" href="https://instagram.com/taylor.studio" target="_blank" rel="noreferrer noopener"
+              >instagram.com/taylor.studio</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Prototype only — data updates simulated for design exploration.</p>
+    </footer>
+  </body>
+</html>
