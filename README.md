@@ -69,12 +69,14 @@ ACCENT_COLOR=#ff4d4d
 THEME=dark                     # dark | light | high-contrast
 ```
 
+Use `.env.development.example` as a starting point when creating your local `.env.development` file.
+
 ## Running locally with Docker Compose
 
 ### Prerequisites
 - Docker Desktop 4.x+ (macOS/Windows) or Docker Engine 20.10+ with Compose v2 (Linux)
 - Cloned repository with access to `docker-compose.dev.yml` and the service Dockerfiles
-- A `.env.development` (or similar) file that mirrors the keys listed above; never commit secrets to the repo
+- A `.env.development` file (copy from `.env.development.example`) that mirrors the keys listed above; never commit secrets to the repo
 
 ### Start services
 Build fresh images and launch the development stack:
@@ -108,7 +110,7 @@ This command builds each service declared in `docker-compose.dev.yml`, loads env
 Running `down -v` ensures transient caches or database volumes are reset between test runs. Omit `-v` if you want to preserve state.
 
 ### Environment variables
-Each service in `docker-compose.dev.yml` should load shared settings via `env_file` entries that point at `.env.development`. Create this file locally (copy from `.env.example` when available) and populate it with API tokens, Cloudflare credentials, and UI configuration. Compose reads the file at runtime, so updates take effect after restarting the affected service. Keep secret values out of version control by listing the file in `.gitignore`.
+Each service in `docker-compose.dev.yml` should load shared settings via `env_file` entries that point at `.env.development`. Copy `.env.development.example` to `.env.development` and populate it with API tokens, Cloudflare credentials, and UI configuration. Compose reads the file at runtime, so updates take effect after restarting the affected service. Keep secret values out of version control by listing the file in `.gitignore`.
 
 If you do not provide overrides in `.env.development`, the compose file falls back to sensible defaults:
 - `FRONTEND_PORT` → defaults to `5173`, matching the Vite dev server.
