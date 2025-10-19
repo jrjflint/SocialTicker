@@ -20,9 +20,9 @@
   - [x] Inspect existing frontend/backend directory layout for mount targets and entry commands.
   - [x] Determine shared networks, volumes, and environment defaults required for dev services.
   - [x] Outline documentation updates needed to explain environment variables and verification steps.
-- [ ] Document verification steps and update review notes after implementation.
-  - [ ] Outline manual test steps (compose up, service health checks, hot reload) in README or docs.
-  - [ ] Summarize results in the `## Review` section once tasks complete.
+- [x] Document verification steps and update review notes after implementation.
+  - [x] Outline manual test steps (compose up, service health checks, hot reload) in README or docs.
+  - [x] Summarize results in the `## Review` section once tasks complete.
 - [x] Plan Docker development scaffolding updates for frontend and backend services.
   - [x] Review existing repository structure for frontend/backend placement and compose expectations.
   - [x] Determine required Dockerfile.dev stages, dependencies, and working directories.
@@ -42,3 +42,19 @@
 - Scaffolded frontend and backend development Dockerfiles with documented build arguments and multi-stage workflows.
 - Documented Docker Compose usage, lifecycle commands, environment variable handling, and Cloudflare Tunnel integration guidance in the README.
 - Added docker-compose.dev scaffold with hot-reload mounts, dev commands, and environment fallbacks alongside `.gitignore` protections for local secrets.
+- Relocated frontend and backend source directories under `docker/` and updated compose contexts, documentation, and ignore rules to match the new structure.
+
+
+## Reorganization Tasks
+
+- [x] Plan backend/frontend relocation into docker-scoped directories.
+  - [x] Inventory files referencing ./frontend or ./backend paths.
+  - [x] Decide target directory names inside ./docker/ for source and config assets.
+- [x] Migrate frontend and backend source trees beneath ./docker/ with minimal path disruption.
+  - [x] Move existing directories and ensure .gitignore or tooling expectations still hold.
+- [x] Update Docker development tooling to match new locations.
+  - [x] Adjust docker-compose.dev.yml build contexts, mounts, and commands.
+  - [x] Update Dockerfile paths or other scripts that assume old locations.
+- [x] Refresh documentation and repository references for the new structure.
+  - [x] Revise README and docker/README to describe new layout and usage instructions.
+- [x] Document verification steps and summarize results in Review section.
