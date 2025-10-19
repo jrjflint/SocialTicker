@@ -110,6 +110,13 @@ Running `down -v` ensures transient caches or database volumes are reset between
 ### Environment variables
 Each service in `docker-compose.dev.yml` should load shared settings via `env_file` entries that point at `.env.development`. Create this file locally (copy from `.env.example` when available) and populate it with API tokens, Cloudflare credentials, and UI configuration. Compose reads the file at runtime, so updates take effect after restarting the affected service. Keep secret values out of version control by listing the file in `.gitignore`.
 
+If you do not provide overrides in `.env.development`, the compose file falls back to sensible defaults:
+- `FRONTEND_PORT` → defaults to `5173`, matching the Vite dev server.
+- `WORKER_DEV_PORT` → defaults to `8787`, matching the Wrangler dev tunnel used by the backend.
+- `VITE_API_BASE_URL` → defaults to `http://localhost:8787` so the frontend proxy resolves to the local Worker dev server.
+
+Adjust these values in your `.env.development` when port conflicts arise or when you expose the API through a tunnel.
+
 ### Integrating Cloudflare Tunnel
 After the stack is running locally, expose the frontend or API through Cloudflare Tunnel to test remote displays:
 

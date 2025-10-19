@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  frontend:
+    # Builds the development image using the lightweight Dockerfile located in ./frontend.
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    image: socialticker/frontend:dev
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    environment:
+      # Fallback keeps local API routing functional when .env overrides are missing.
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8787}
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+    working_dir: /app
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app:delegated
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    # Builds the Worker development image; expects sources inside ./backend/worker.
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: socialticker/backend:dev
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    environment:
+      # Default dev port documents the expected Wrangler binding without leaking secrets.
+      WORKER_DEV_PORT: ${WORKER_DEV_PORT:-8787}
+    command: ["sh", "-c", "wrangler dev --local --persist-to=./.wrangler/state --ip 0.0.0.0 --port ${WORKER_DEV_PORT:-8787}"]
+    working_dir: /app
+    ports:
+      - "${WORKER_DEV_PORT:-8787}:8787"
+    volumes:
+      - ./backend/worker:/app:delegated
+      - backend_node_modules:/app/node_modules
+      - backend_wrangler_state:/app/.wrangler
+
+volumes:
+  frontend_node_modules:
+  backend_node_modules:
+  backend_wrangler_state:
