@@ -43,6 +43,7 @@
 - Documented Docker Compose usage, lifecycle commands, environment variable handling, and Cloudflare Tunnel integration guidance in the README.
 - Added docker-compose.dev scaffold with hot-reload mounts, dev commands, and environment fallbacks alongside `.gitignore` protections for local secrets.
 - Relocated frontend and backend source directories under `docker/` and updated compose contexts, documentation, and ignore rules to match the new structure.
+- Logged the 2025-10-19 changelog entry covering Docker Compose scaffolding, development Dockerfiles, repository reorganization, and expanded documentation guidance.
 
 
 ## Reorganization Tasks
@@ -58,3 +59,10 @@
 - [x] Refresh documentation and repository references for the new structure.
   - [x] Revise README and docker/README to describe new layout and usage instructions.
 - [x] Document verification steps and summarize results in Review section.
+
+## Changelog Update 2025-10-19
+
+- [x] Review recent commits and repository changes to capture today's accomplishments.
+- [x] Draft concise changelog entry for the latest work.
+- [x] Update `CHANGELOG.md` with the new entry under the appropriate date.
+- [x] Summarize the outcome in the `## Review` section after completion.
