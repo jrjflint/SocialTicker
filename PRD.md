@@ -10,7 +10,9 @@ Social Ticker is a browser-based digital counter that showcases an Instagram acc
 
 ## Key Features
 1. **Real-Time Follower Count**
-   - Poll the Instagram API or a proxy data source at a configurable interval.
+   - Poll the Instagram API or a proxy data source at a configurable interval managed by the backend scheduler.
+   - The backend must refresh the follower total no more frequently than every 30 seconds (or via an equivalent cron job) to remain safely within API quotas while still supporting responsive UI updates.
+   - The frontend polls the cache-backed endpoint frequently (e.g., every 5–8 seconds) to animate changes without hitting the upstream API directly.
    - Smoothly animate changes to the follower total to avoid abrupt jumps.
 2. **Profile Identity Module**
    - Display the Instagram handle, profile image, and optional tagline.
@@ -22,10 +24,22 @@ Social Ticker is a browser-based digital counter that showcases an Instagram acc
    - Offer preset themes optimized for different screen orientations (landscape and portrait).
    - Provide controls for toggling modules (e.g., hide QR code, show follower delta, etc.).
 
+## Data Refresh & Caching
+- A lightweight backend job (cron trigger, scheduled worker, or queue) retrieves the Instagram follower total at a cadence of 30 seconds or slower (≥18 seconds minimum) to respect rate limits.
+- Retrieved totals are persisted to a managed cache store (Cloudflare KV/Durable Object, Redis, or an equivalent key-value store) with a default TTL of 90 seconds so the UI can read without repeatedly hitting the API.
+- The backend exposes a cache-backed endpoint (e.g., `/api/metrics`) returning the most recent follower total and timestamp metadata so the UI can detect staleness.
+- Frontend clients continue polling the cached endpoint on a short interval for smooth visuals without increasing upstream load.
+
 ## Success Metrics
 - Accurate follower counts within ±1% of the live total.
 - Visual latency under two seconds after each data refresh.
 - Successful QR code scans during pilot deployments.
+
+## Acceptance Criteria
+- When the cache is fresh (timestamp within TTL), the UI renders the follower total, profile module, and QR code without errors.
+- If the cache is older than its TTL, the UI displays the last-known total with a "stale" or "offline" indicator and reduces animation to avoid misleading viewers, while logging an alert for operators.
+- When the backend encounters API quota errors, it retains the previous cached total, surfaces an error flag in the API response, and the UI shows the degraded state message without crashing.
+- Scheduled refresh jobs can be configured for different hosting targets (e.g., cron trigger, worker schedule) while maintaining the minimum ≥18-second fetch separation.
 
 ## Constraints & Assumptions
 - Initial release targets modern Chromium-based browsers running on dedicated displays.
