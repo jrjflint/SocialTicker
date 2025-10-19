@@ -17,13 +17,13 @@ The ticker is a web UI that pulls follower data from a lightweight backend which
 
 - Frontend (browser)
   - Full-screen web app optimized for large displays
-  - Polls a backend endpoint frequently (e.g., every 5–12s) for a cached follower total
+  - Polls a backend endpoint frequently (e.g., every 5–8s) for a cached follower total
   - Animates deltas, renders QR code, applies theme
 
 - Backend (data fetch + cache)
-  - Periodically fetches follower count from the Instagram Graph API (Business Discovery) or a third-party provider
-  - Caches results with a conservative TTL (e.g., 60–120s) to stay within API quotas
-  - Exposes a simple HTTPS endpoint returning the latest cached metrics and profile metadata
+  - Runs a scheduled job (cron trigger, worker schedule, or queue) that refreshes the follower total no more than every 30 seconds (≥18-second minimum) to honor API rate limits
+  - Persists the latest totals to a managed key-value cache such as Cloudflare KV/Durable Objects, Redis, or Supabase KV with a default 90-second TTL
+  - Exposes a simple HTTPS endpoint returning the cached metrics, profile metadata, and the timestamp of the last refresh
 
 Backend implementation options (choose one and keep hosting consistent):
 - Cloudflare Workers (KV/Durable Objects + Cron Triggers) — edge runtime, no Node/Express
@@ -50,7 +50,7 @@ IG_BUSINESS_ID=
 IG_ACCESS_TOKEN=
 
 # Caching & polling
-CACHE_TTL_SECONDS=60           # backend cache TTL
+CACHE_TTL_SECONDS=90           # backend cache TTL (should exceed refresh cadence)
 FRONTEND_POLL_INTERVAL_MS=5000 # UI refresh; reads cached data
 
 # Profile & theming
@@ -73,11 +73,12 @@ THEME=dark                     # dark | light | high-contrast
 
 ## Configuration
 - Polling strategy
-  - UI polling: frequent (e.g., 5–12s) for smooth visuals
-  - Backend fetch: conservative (e.g., 60–120s) to respect API quotas
+  - UI polling: frequent (e.g., every 5–8s) against the cached endpoint for smooth visuals
+  - Backend fetch: scheduled refresh every 30s or slower (≥18s) that updates the cache without exceeding quotas
 - Fallback states
   - Gracefully handle network errors and API timeouts
-  - Display last-known value and a subtle “offline” indicator
+  - Display last-known value and a subtle “offline” indicator when the cache is stale
+  - Surface API quota or refresh errors by flagging the response and retaining the previous cached total
 - Theming
   - Accent color, typography scale, and theme preset
   - Portrait/landscape layout presets
