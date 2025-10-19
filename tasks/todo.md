@@ -45,6 +45,7 @@
 - Relocated frontend and backend source directories under `docker/` and updated compose contexts, documentation, and ignore rules to match the new structure.
 - Logged the 2025-10-19 changelog entry covering Docker Compose scaffolding, development Dockerfiles, repository reorganization, and expanded documentation guidance.
 - Drafted a display-focused frontend prototype with HTML/CSS scaffolding for the identity, follower counter, and QR modules.
+- Connected the prototype to a Cloudflare Worker-powered Instagram follower endpoint, added live polling/error states, and replaced the QR placeholder with the `@jamesfollent` code.
 
 
 ## Reorganization Tasks
@@ -76,3 +77,11 @@
 - [x] Implement `docker/frontend/style.css` with typography, layout, and theme styling aligned with the PRD.
 - [x] Verify the prototype layout manually (structure, accessibility basics) and adjust as needed.
 - [x] Update this TODO list and add a summary entry to the `## Review` section after implementation.
+
+## Instagram follower integration & QR rollout
+
+- [x] Scaffold the Cloudflare Worker (`wrangler.toml`, entry point, env bindings) to serve `/api/followers/instagram/:handle`.
+- [x] Implement Instagram fetch + KV caching logic with graceful stale fallbacks and environment-driven secrets.
+- [x] Wire the frontend ticker to the Worker endpoint, updating the live counter, metadata, and error states.
+- [x] Replace the placeholder QR module with a generated code pointing to `https://www.instagram.com/jamesfollent` and document alt text.
+- [x] Document the new endpoint and UI behavior in `CHANGELOG.md` and summarize results in the Review section.

@@ -1,3 +1,16 @@
+## 2025-10-20
+
+### Added
+- Cloudflare Worker endpoint `/api/followers/instagram/:handle` with KV-backed caching, Instagram web profile fetching, and CORS headers for the frontend ticker.
+- Frontend polling script that displays the live follower total, connection health, and countdown timers for `@jamesfollent`.
+- QR module rendering a generated code that links directly to `https://www.instagram.com/jamesfollent`.
+
+### Changed
+- Updated prototype layout copy and status pill to reflect the James Follent profile and dynamic connection states.
+
+### Fixed
+- Handled stale cache fallbacks with descriptive alerts when Instagram responses fail or lag.
+
 ## 2025-10-19
 
 ### Added
