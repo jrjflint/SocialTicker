@@ -13,22 +13,31 @@ Status: MVP in planning. See `PRD.md` for product scope and `PLAN.md` for implem
 
 ## Architecture Overview
 
-The ticker is a web UI that pulls follower data from a lightweight backend which handles Instagram API access and caching to respect rate limits.
+The MVP targets a Cloudflare Worker backend that manages Instagram API access and caching to respect rate limits while keeping the frontend lightweight.
 
 - Frontend (browser)
   - Full-screen web app optimized for large displays
-  - Polls a backend endpoint frequently (e.g., every 5–8s) for a cached follower total
+  - Polls the Worker endpoint frequently (e.g., every 5–8s) for a cached follower total
   - Animates deltas, renders QR code, applies theme
 
-- Backend (data fetch + cache)
-  - Runs a scheduled job (cron trigger, worker schedule, or queue) that refreshes the follower total no more than every 30 seconds (≥18-second minimum) to honor API rate limits
-  - Persists the latest totals to a managed key-value cache such as Cloudflare KV/Durable Objects, Redis, or Supabase KV with a default 90-second TTL
-  - Exposes a simple HTTPS endpoint returning the cached metrics, profile metadata, and the timestamp of the last refresh
+- Backend (Cloudflare Worker)
+  - Uses a scheduled Cron Trigger to refresh the follower total no more than every 30 seconds (≥18-second minimum) to honor API rate limits
+  - Stores the latest totals and metadata in Cloudflare KV with a default 90-second TTL and writes the refresh timestamp alongside the payload
+  - Serves `/api/metrics` via the Worker fetch handler, returning the cached metrics, profile metadata, last refresh timestamp, and stale indicators when needed
 
-Backend implementation options (choose one and keep hosting consistent):
-- Cloudflare Workers (KV/Durable Objects + Cron Triggers) — edge runtime, no Node/Express
-- Supabase Edge Functions — Deno-based runtime, similar constraints
-- Node.js + Express (VM or container) — traditional server environment
+### Worker Fetch & Cache Flow
+
+1. **Scheduled refresh**
+   - A Cron Trigger invokes the Worker on a configured cadence (≥30 seconds).
+   - The Worker fetches the Instagram follower total (or alternate provider) using secrets injected via `wrangler`.
+   - The response is validated and written to Cloudflare KV under a deterministic key with metadata `{ total, profile, refreshedAt }`.
+2. **Cache serving**
+   - The `fetch()` handler responds to `/api/metrics`.
+   - It reads the KV entry; if missing or stale (older than `CACHE_TTL_SECONDS`), it triggers a background refresh via `ctx.waitUntil()` while returning the last known value with `stale: true`.
+   - Successful reads return JSON including `total`, `profile`, `refreshedAt`, and `stale` status for the frontend to render gracefully.
+3. **Error handling**
+   - API failures store an error marker and preserve the previous total to avoid dropping to zero.
+   - Logged errors are surfaced through Cloudflare's observability tooling for follow-up.
 
 Note on rate limits: The UI may refresh every few seconds, but actual API calls should occur server-side at a much lower rate and be served from a cache. See `QUESTIONS.md` for known constraints and tradeoffs.
 
@@ -37,9 +46,9 @@ Note on rate limits: The UI may refresh every few seconds, but actual API calls 
 This repository currently contains product docs and scaffolding. Code is forthcoming. The steps below outline the intended setup once the implementation lands.
 
 ### Prerequisites
-- Node.js 18+ and npm/pnpm (for local dev)
+- Node.js 18+ and npm/pnpm (for local Worker development tooling)
+- Cloudflare account with Workers, KV, and Cron Triggers enabled
 - An Instagram Business account and Graph API access, or a third-party data source
-- For edge deployments: Cloudflare account (Workers + KV/Durable Objects) or Supabase project
 
 ### Environment Variables (planned)
 Create a `.env` (or platform-specific secrets) with:
@@ -62,7 +71,7 @@ THEME=dark                     # dark | light | high-contrast
 
 ### Repository Structure (planned)
 - `frontend/` — web app (UI, theming, QR rendering)
-- `backend/` — Worker/Edge Function/Express server (choose one)
+- `backend/worker/` — Cloudflare Worker source, KV bindings, scheduled logic
 - `public/` — static assets and default themes
 - `docs/` — additional documentation and screenshots
 
@@ -85,21 +94,10 @@ THEME=dark                     # dark | light | high-contrast
 
 ## Deployment
 
-Pick one path and keep the runtime consistent with your hosting target.
-
-- Cloudflare Workers
-  - Use KV for cached metrics and a Cron Trigger to refresh
-  - Expose `/api/metrics` returning cached follower count + profile
-  - Deploy with `wrangler`
-
-- Node.js + Express (VM/Container)
-  - Run a scheduler (cron/worker) to refresh cache (memory/Redis)
-  - Expose `/api/metrics` and serve the frontend
-  - Deploy via Docker or your preferred platform
-
-- Supabase Edge Functions
-  - Similar to Workers; use a scheduled job or external scheduler
-  - Store cached values in Postgres or KV-like storage
+- **Cloudflare Workers (MVP target)**
+  - Bind a KV namespace (e.g., `SOCIAL_TICKER_CACHE`) and Cron Trigger in `wrangler.toml`.
+  - Run `wrangler dev` locally to iterate on the Worker and frontend in tandem.
+  - Deploy with `wrangler publish`, ensuring secrets (`IG_ACCESS_TOKEN`, etc.) are stored via `wrangler secret put`.
 
 ## Limitations & Notes
 - Instagram’s API access and quotas constrain “real-time” behavior. Favor caching to avoid throttling.
