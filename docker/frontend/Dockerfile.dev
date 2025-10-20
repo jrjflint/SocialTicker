@@ -34,6 +34,10 @@ RUN --mount=type=cache,target=/root/.npm \
     else echo "No package manifest found; skipping install"; \
     fi
 
+# Ensure a node_modules directory always exists so later stages can copy it even
+# when no Node project has been initialized yet.
+RUN mkdir -p /app/node_modules
+
 # Builder stage holds compiled assets for non-volume scenarios.
 FROM deps AS builder
 COPY . .
