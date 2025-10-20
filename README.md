@@ -73,6 +73,19 @@ Use `.env.development.example` as a starting point when creating your local `.en
 
 ## Running locally with Docker Compose
 
+### Quick static preview
+
+Use the lightweight preview stack to serve the static prototype from `docker/frontend` without running the full development enviro
+nment:
+
+```bash
+docker compose -f docker-compose.preview.yml up
+```
+
+This command pulls the `node:20-alpine` image, mounts `docker/frontend` read-only inside the container, and runs `npx serve` on
+port 3000. Once the logs show `Accepting connections`, open [http://localhost:3000](http://localhost:3000) in your browser to v
+iew `index.html`. Press `Ctrl+C` to stop the service when you are done.
+
 ### Prerequisites
 - Docker Desktop 4.x+ (macOS/Windows) or Docker Engine 20.10+ with Compose v2 (Linux)
 - Cloned repository with access to `docker-compose.dev.yml` and the service Dockerfiles

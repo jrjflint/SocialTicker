@@ -50,6 +50,7 @@
 - Removed the deprecated Docker Compose version declaration, added a `.env.development.example`, and refreshed README guidance for creating local env files.
 - Hardened the frontend Dockerfile.dev dependency stage to tolerate missing package manifests so compose builds succeed before the Node toolchain is scaffolded.
 - Added a runtime guard that always creates an empty `node_modules` directory so the Docker runtime stage can copy dependencies even before a Node project exists.
+- Added `docker-compose.preview.yml` plus README instructions for a Node-based static preview server that mounts `docker/frontend` and serves `index.html` on port 3000.
 
 
 ## Reorganization Tasks
@@ -117,3 +118,9 @@
 - [x] Review existing frontend assets to confirm required tooling for the dev server workflow.
 - [x] Scaffold `docker/frontend/package.json` with Vite development scripts and placeholder metadata.
 - [x] Document the new manifest in the `## Review` section after verifying the dev command runs in Docker (noted registry access limitations prevented an in-container run).
+
+## Node static server compose bootstrap
+
+- [x] Confirm the static entry point lives at `docker/frontend/index.html` and identify the directory to serve.
+- [x] Add a Docker Compose configuration that runs a lightweight Node-based static file server for local previewing.
+- [x] Document how to start the service and which URL to open so contributors can view the prototype.

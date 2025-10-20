@@ -1,0 +1,10 @@
+services:
+  frontend-static:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npx --yes serve -s . -l 3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/frontend:/app:ro
+    restart: unless-stopped
