@@ -48,6 +48,7 @@
 - Connected the prototype to a Cloudflare Worker-powered Instagram follower endpoint, added live polling/error states, and replaced the QR placeholder with the `@jamesfollent` code.
 - Removed the deprecated Docker Compose version declaration, added a `.env.development.example`, and refreshed README guidance for creating local env files.
 - Hardened the frontend Dockerfile.dev dependency stage to tolerate missing package manifests so compose builds succeed before the Node toolchain is scaffolded.
+- Added a runtime guard that always creates an empty `node_modules` directory so the Docker runtime stage can copy dependencies even before a Node project exists.
 
 
 ## Reorganization Tasks
@@ -102,3 +103,10 @@
 - [x] Update `.gitignore` to allow the example file while keeping real env files ignored.
 - [x] Point README instructions at the new example file and clarify setup steps.
 - [x] Summarize the work in the `## Review` section after implementation.
+
+## Frontend runtime node_modules guard
+
+- [x] Inspect `docker/frontend/Dockerfile.dev` runtime copy steps for assumptions about installed dependencies.
+- [x] Update the deps stage to guarantee `/app/node_modules` exists even when no package manifests are present.
+- [x] Rebuild or lint the Dockerfile locally to confirm the guard behaves as expected.
+- [x] Document the adjustment in the `## Review` section once verified.
