@@ -45,6 +45,7 @@
 - Relocated frontend and backend source directories under `docker/` and updated compose contexts, documentation, and ignore rules to match the new structure.
 - Logged the 2025-10-19 changelog entry covering Docker Compose scaffolding, development Dockerfiles, repository reorganization, and expanded documentation guidance.
 - Drafted a display-focused frontend prototype with HTML/CSS scaffolding for the identity, follower counter, and QR modules.
+- Bootstrapped a minimal Vite `package.json` for the frontend so the Docker dev server can run once dependencies install (npm registry access unavailable in CI to verify).
 - Connected the prototype to a Cloudflare Worker-powered Instagram follower endpoint, added live polling/error states, and replaced the QR placeholder with the `@jamesfollent` code.
 - Removed the deprecated Docker Compose version declaration, added a `.env.development.example`, and refreshed README guidance for creating local env files.
 - Hardened the frontend Dockerfile.dev dependency stage to tolerate missing package manifests so compose builds succeed before the Node toolchain is scaffolded.
@@ -110,3 +111,9 @@
 - [x] Update the deps stage to guarantee `/app/node_modules` exists even when no package manifests are present.
 - [x] Rebuild or lint the Dockerfile locally to confirm the guard behaves as expected.
 - [x] Document the adjustment in the `## Review` section once verified.
+
+## Frontend package manifest bootstrap
+
+- [x] Review existing frontend assets to confirm required tooling for the dev server workflow.
+- [x] Scaffold `docker/frontend/package.json` with Vite development scripts and placeholder metadata.
+- [x] Document the new manifest in the `## Review` section after verifying the dev command runs in Docker (noted registry access limitations prevented an in-container run).
