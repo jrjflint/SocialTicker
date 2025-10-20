@@ -47,6 +47,7 @@
 - Drafted a display-focused frontend prototype with HTML/CSS scaffolding for the identity, follower counter, and QR modules.
 - Connected the prototype to a Cloudflare Worker-powered Instagram follower endpoint, added live polling/error states, and replaced the QR placeholder with the `@jamesfollent` code.
 - Removed the deprecated Docker Compose version declaration, added a `.env.development.example`, and refreshed README guidance for creating local env files.
+- Hardened the frontend Dockerfile.dev dependency stage to tolerate missing package manifests so compose builds succeed before the Node toolchain is scaffolded.
 
 
 ## Reorganization Tasks
@@ -78,6 +79,13 @@
 - [x] Implement `docker/frontend/style.css` with typography, layout, and theme styling aligned with the PRD.
 - [x] Verify the prototype layout manually (structure, accessibility basics) and adjust as needed.
 - [x] Update this TODO list and add a summary entry to the `## Review` section after implementation.
+
+## Frontend Dockerfile manifest guard
+
+- [x] Inspect the frontend Dockerfile build stages to confirm how package manifests are consumed.
+- [x] Adjust the dependency install stage so it no longer copies missing manifest files unconditionally.
+- [x] Verify the updated Dockerfile handles contexts without a Node package manifest.
+- [x] Record the change in the Review section once validated.
 
 ## Instagram follower integration & QR rollout
 

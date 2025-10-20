@@ -17,8 +17,13 @@ RUN corepack enable && \
 # Install OS packages commonly required by frontend build tooling.
 RUN apk add --no-cache git openssh-client
 
-# Copy dependency manifests first to leverage Docker layer caching.
-COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+# Copy dependency manifests first to leverage Docker layer caching. Use a
+# BuildKit mount so missing files don't break the build when the frontend is
+# still a static prototype without a Node toolchain.
+RUN --mount=type=bind,source=.,target=/tmp/src \
+    for manifest in package.json package-lock.json pnpm-lock.yaml yarn.lock; do \
+      if [ -f "/tmp/src/${manifest}" ]; then cp "/tmp/src/${manifest}" "./${manifest}"; fi; \
+    done
 
 # Install dependencies only when manifests exist to keep the image flexible pre-scaffold.
 RUN --mount=type=cache,target=/root/.npm \
